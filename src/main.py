@@ -1,7 +1,7 @@
 from geometry import Point, Polygon, get_point_on_segment
 from hausdorff_discrete import generate_samples
 from solver import solve
-from hausdorff_poly import total_hausdorff
+from hausdorff_poly import total_hausdorff_with_network
 from typing import List
 
 
@@ -28,7 +28,12 @@ if __name__ == "__main__":
 
     centers = solve(non_convex_poly, centers)
 
-    approx_points = centers + non_convex_poly.vertices
-    approx_poly = Polygon(approx_points)
-    
-    print("Total hausdorff:", total_hausdorff(convex_poly, approx_poly))
+    from hausdorff_poly import total_hausdorff_with_network
+    min_distance = total_hausdorff_with_network(
+        convex_poly, centers,
+        initial_shift=(0.0, 0.0),   
+        step_size=5.0,              
+        max_iter=500,
+        accuracy=1e-3
+    )
+    print(f"Минимальное хаусдорфово расстояние: {min_distance}")
